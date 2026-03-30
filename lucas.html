@@ -49,17 +49,31 @@
         </p>
     </div>
 
-    <script>
-        // Mostra a data e hora do acesso
-        document.getElementById('data-check').innerText = new Date().toLocaleString('pt-BR');
+  <script>
+    // 1. Mostra a data e hora atualizada do acesso
+    document.getElementById('data-check').innerText = new Date().toLocaleString('pt-BR');
 
-        // Bloqueia PrintScreen e atalhos de cópia (Ctrl+C, Ctrl+U, etc)
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 'p' || e.key === 's')) {
-                e.preventDefault();
-                alert('Aviso: Proteção de dados ativa.');
-            }
-        });
-    </script>
+    // 2. Bloqueia o Botão Direito do Mouse
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    // 3. Bloqueia Atalhos de Teclado (PrintScreen, Ctrl+S, Ctrl+P, Ctrl+U)
+    document.addEventListener('keydown', function(e) {
+        if (
+            e.key === "PrintScreen" || 
+            (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u' || e.key === 'shift' || e.key === 'i'))
+        ) {
+            e.preventDefault();
+            alert('Ação bloqueada por segurança.');
+        }
+    });
+
+    // 4. "Limpa" a área de transferência se ele tentar dar Print
+    document.addEventListener('keyup', (e) => {
+        if (e.key === "PrintScreen") {
+            navigator.clipboard.writeText('');
+            alert('Print Screen desativado neste documento.');
+        }
+    });
+</script>
 </body>
 </html>
