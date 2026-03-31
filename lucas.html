@@ -5,75 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validação de Colaborador</title>
     <style>
-        /* Estilos para o Card */
-        body { user-select: none; -webkit-user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); width: 300px; border-top: 10px solid #004a99; position: relative; }
-        .info-group { text-align: left; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .label { font-weight: bold; color: #004a99; font-size: 0.85em; text-transform: uppercase; }
-        .value { color: #333; font-size: 1.1em; display: block; margin-top: 2px; }
-        .status-badge { display: block; text-align: center; padding: 8px; border-radius: 5px; background: #28a745; color: white; font-weight: bold; margin-top: 20px; }
-        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 35px; color: rgba(0,0,0,0.03); pointer-events: none; white-space: nowrap; }
+        body { user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; text-align: center; }
+        
+        /* O segredo: o topo do card fica verde para receber o logo branco */
+        .card { max-width: 300px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); overflow: hidden; }
+       .card-header { 
+    background: #016138; /* Cor exata do fundo da sua logo */ 
+    padding: 25px 15px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-servest { 
+    max-width: 150px; /* Aumentei um pouco para dar mais destaque */
+    height: auto;
+    display: block;
+}
+        .profile-pic { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid #28a745; margin-top: -55px; /* Foto "sobe" para encostar no header */ }
+
+        .status-active { display: block; background: #28a745; color: white; padding: 10px; border-radius: 5px; font-weight: bold; font-size: 0.9em; margin-bottom: 20px; }
+        .label { font-weight: bold; color: #555; font-size: 0.8em; }
+        .value { color: #222; font-size: 1.1em; display: block; margin-bottom: 15px; }
+        
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 40px; color: rgba(0,0,0,0.05); pointer-events: none; z-index: 10; }
+        .verificacao { font-size: 0.7em; color: #777; margin-top: 10px; }
     </style>
 </head>
 <body oncontextmenu="return false">
 
     <div class="card">
-        <div class="watermark">CÓPIA PROIBIDA</div>
-        
-        <div style="text-align: center; margin-bottom: 20px;">
-            <img src="lucas.png.png" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid #28a745;">
+        <div class="card-header">
+            <img src="logo-green.png" alt="GREEN SERVEST" class="logo-servest">
         </div>
 
-        <h3 style="text-align: center; color: #555; margin-top: 0;">Dados do Colaborador</h3>
+        <div class="card-body">
+            <img src="lucas.png.png" alt="Lucas Santos" class="profile-pic">
 
-        <div class="info-group">
-            <span class="label">ID / Matrícula:</span>
-            <span class="value">175</span> </div>
+            <h3 style="color: #333; margin: 20px 0;">Dados do Colaborador</h3>
 
-        <div class="info-group">
-            <span class="label">Nome Completo:</span>
-            <span class="value">Lucas Miranda de Assis</span> </div>
+            <div class="status-active">CADASTRO ATIVO</div>
 
-        <div class="info-group">
+            <div>
+                <span class="label">ID / MATRÍCULA:</span>
+                <span class="value">175</span>
+            </div>
+            <div>
+                <span class="label">NOME COMPLETO:</span>
+                <span class="value">Lucas Miranda de Assis</span>
+            </div>
+            <div>
+                <span class="label">CARGO:</span>
+                <span class="value">Gestor Operacional</span>
+            </div>
+            
+ <div class="info-group">
             <span class="label">Departamento:</span>
             <span class="value">Administrativo</span> </div>
-
-        <div class="info-group">
-            <span class="label">Cargo:</span>
-            <span class="value">Gestor Operacional</span> </div>
-
-        <div class="status-badge">CADASTRO ATIVO</div>
-
-        <p style="font-size: 10px; color: #aaa; text-align: center; margin-top: 15px;">
-            Verificado em: <span id="data-check"></span>
-        </p>
+            
+            <div class="verificacao" id="data-check">Verificando...</div>
+        </div>
+        <div class="watermark">CÓPIA PROIBIDA</div>
     </div>
 
-  <script>
-    // 1. Mostra a data e hora atualizada do acesso
-    document.getElementById('data-check').innerText = new Date().toLocaleString('pt-BR');
-
-    // 2. Bloqueia o Botão Direito do Mouse
-    document.addEventListener('contextmenu', event => event.preventDefault());
-
-    // 3. Bloqueia Atalhos de Teclado (PrintScreen, Ctrl+S, Ctrl+P, Ctrl+U)
-    document.addEventListener('keydown', function(e) {
-        if (
-            e.key === "PrintScreen" || 
-            (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u' || e.key === 'shift' || e.key === 'i'))
-        ) {
-            e.preventDefault();
-            alert('Ação bloqueada por segurança.');
+    <script>
+        function atualizarRelogio() {
+            const agora = new Date();
+            const texto = "Verificado em: " + agora.toLocaleString('pt-BR');
+            document.getElementById('data-check').innerText = texto;
         }
-    });
+        setInterval(atualizarRelogio, 1000); // Atualiza os segundos a cada 1 segundo
+        atualizarRelogio(); // Executa a primeira vez
+    </script>
 
-    // 4. "Limpa" a área de transferência se ele tentar dar Print
-    document.addEventListener('keyup', (e) => {
-        if (e.key === "PrintScreen") {
-            navigator.clipboard.writeText('');
-            alert('Print Screen desativado neste documento.');
-        }
-    });
-</script>
 </body>
 </html>
