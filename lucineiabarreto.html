@@ -68,43 +68,58 @@
         <div class="watermark">CÓPIA PROIBIDA</div>
     </div>
 
-  <script>
-    // 1. Relógio em tempo real (Prova que não é print antigo)
+ <script>
+    // --- CONFIGURAÇÃO DA SESSÃO (1 MINUTO) ---
+    let tempoRestante = 60; // segundos
+
+    function iniciarContagemRegressiva() {
+        const contador = setInterval(() => {
+            tempoRestante--;
+
+            // Quando o tempo acabar
+            if (tempoRestante <= 0) {
+                clearInterval(contador);
+                expirarAcesso();
+            }
+        }, 1000);
+    }
+
+    function expirarAcesso() {
+        // Apaga o crachá e bloqueia a visualização
+        document.body.innerHTML = `
+            <div style="padding: 60px 20px; text-align: center; font-family: sans-serif; background: #fff; height: 100vh;">
+                <div style="font-size: 70px;">⏳</div>
+                <h1 style="color: #555; margin-top: 20px;">SESSÃO EXPIRADA</h1>
+                <p style="color: #888; font-size: 1.1em;">Por segurança, o tempo de visualização acabou.</p>
+                <p style="color: #28a745; font-weight: bold;">Escaneie o QR Code físico novamente para acessar.</p>
+                <hr style="width: 50px; margin: 30px auto; border: 1px solid #eee;">
+                <p style="color: #999; font-size: 0.8em;"><b>GREEN SERVEST</b><br>Controle de Acesso Dinâmico</p>
+            </div>
+        `;
+    }
+
+    // --- RELÓGIO E SEGURANÇA ---
     function atualizarRelogio() {
         const agora = new Date();
-        const texto = "Verificado em: " + agora.toLocaleString('pt-BR');
-        document.getElementById('data-check').innerText = texto;
+        const campoData = document.getElementById('data-check');
+        if (campoData) {
+            campoData.innerText = "Verificado em: " + agora.toLocaleString('pt-BR');
+        }
     }
-    setInterval(atualizarRelogio, 1000);
-    atualizarRelogio();
 
-    // 2. Bloqueio do Botão Direito (Mouse e Touch longo)
-    document.addEventListener('contextmenu', event => event.preventDefault());
+    // Inicia tudo ao carregar a página
+    window.onload = function() {
+        iniciarContagemRegressiva();
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
+    };
 
-    // 3. Bloqueio de Atalhos de Teclado (Print, Salvar, Inspecionar)
-    document.addEventListener('keydown', function(e) {
-        if (
-            e.key === "PrintScreen" || 
-            e.keyCode === 44 || // Código antigo do PrintScreen
-            (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u' || e.key === 'i' || e.key === 'j')) ||
-            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))
-        ) {
+    // Bloqueios de segurança Anti-Print
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (e.key === "PrintScreen" || (e.ctrlKey && (e.key === 'p' || e.key === 's'))) {
             e.preventDefault();
-            alert('Acesso Protegido: Ação bloqueada por segurança da Green Servest.');
-            return false;
         }
-    });
-
-    // 4. Limpeza da Área de Transferência (Se o cara bater o print, ele tenta colar e vem vazio)
-    document.addEventListener('keyup', (e) => {
-        if (e.key === "PrintScreen" || e.keyCode === 44) {
-            navigator.clipboard.writeText('Conteúdo Protegido - Green Servest');
-        }
-    });
-
-    // 5. Bloqueio de Arrastar Imagem (Evita que salvem a foto do colaborador)
-    document.querySelectorAll('img').forEach(img => {
-        img.ondragstart = () => false;
     });
 </script>
 
