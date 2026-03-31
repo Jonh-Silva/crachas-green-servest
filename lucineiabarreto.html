@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação de Colaborador</title>
+    <style>
+        body { user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; text-align: center; }
+        
+        /* O segredo: o topo do card fica verde para receber o logo branco */
+        .card { max-width: 300px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); overflow: hidden; }
+       .card-header { 
+    background: #016138; /* Cor exata do fundo da sua logo */ 
+    padding: 25px 15px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-servest { 
+    max-width: 150px; /* Aumentei um pouco para dar mais destaque */
+    height: auto;
+    display: block;
+}
+        .profile-pic { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid #28a745; margin-top: -55px; /* Foto "sobe" para encostar no header */ }
+
+        .status-active { display: block; background: #28a745; color: white; padding: 10px; border-radius: 5px; font-weight: bold; font-size: 0.9em; margin-bottom: 20px; }
+        .label { font-weight: bold; color: #555; font-size: 0.8em; }
+        .value { color: #222; font-size: 1.1em; display: block; margin-bottom: 15px; }
+        
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 40px; color: rgba(0,0,0,0.05); pointer-events: none; z-index: 10; }
+        .verificacao { font-size: 0.7em; color: #777; margin-top: 10px; }
+    </style>
+</head>
+<body oncontextmenu="return false">
+
+    <div class="card">
+        <div class="card-header">
+            <img src="logo-green.png" alt="GREEN SERVEST" class="logo-servest">
+        </div>
+
+        <div class="card-body">
+            <img src="lucineiabarreto.png" alt="Lucas Santos" class="profile-pic">
+
+            <h3 style="color: #333; margin: 20px 0;">Dados do Colaborador</h3>
+
+            <div class="status-active">CADASTRO ATIVO</div>
+
+            <div>
+                <span class="label">ID / MATRÍCULA:</span>
+                <span class="value">55</span>
+            </div>
+            <div>
+                <span class="label">NOME COMPLETO:</span>
+                <span class="value">Lucineia Barreto</span>
+            </div>
+            <div>
+                <span class="label">CARGO:</span>
+                <span class="value">Auxiliar de Serviços Gerais</span>
+            </div>
+            
+ <div class="info-group">
+            <span class="label">Departamento:</span>
+            <span class="value">Operacional</span> </div>
+            
+            <div class="verificacao" id="data-check">Verificando...</div>
+        </div>
+        <div class="watermark">CÓPIA PROIBIDA</div>
+    </div>
+
+  <script>
+    // 1. Relógio em tempo real (Prova que não é print antigo)
+    function atualizarRelogio() {
+        const agora = new Date();
+        const texto = "Verificado em: " + agora.toLocaleString('pt-BR');
+        document.getElementById('data-check').innerText = texto;
+    }
+    setInterval(atualizarRelogio, 1000);
+    atualizarRelogio();
+
+    // 2. Bloqueio do Botão Direito (Mouse e Touch longo)
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    // 3. Bloqueio de Atalhos de Teclado (Print, Salvar, Inspecionar)
+    document.addEventListener('keydown', function(e) {
+        if (
+            e.key === "PrintScreen" || 
+            e.keyCode === 44 || // Código antigo do PrintScreen
+            (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u' || e.key === 'i' || e.key === 'j')) ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))
+        ) {
+            e.preventDefault();
+            alert('Acesso Protegido: Ação bloqueada por segurança da Green Servest.');
+            return false;
+        }
+    });
+
+    // 4. Limpeza da Área de Transferência (Se o cara bater o print, ele tenta colar e vem vazio)
+    document.addEventListener('keyup', (e) => {
+        if (e.key === "PrintScreen" || e.keyCode === 44) {
+            navigator.clipboard.writeText('Conteúdo Protegido - Green Servest');
+        }
+    });
+
+    // 5. Bloqueio de Arrastar Imagem (Evita que salvem a foto do colaborador)
+    document.querySelectorAll('img').forEach(img => {
+        img.ondragstart = () => false;
+    });
+</script>
+
+</body>
+</html>
