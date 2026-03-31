@@ -68,60 +68,64 @@
         <div class="watermark">CÓPIA PROIBIDA</div>
     </div>
 
-  <script>
-    // --- CONFIGURAÇÃO DA SESSÃO (1 MINUTO) ---
-    let tempoRestante = 60; // segundos
+   <script>
+    // --- CONTROLE DE SESSÃO ÚNICA GREEN SERVEST ---
+    const tempoSessao = 60; // 60 segundos
+    
+    function gerenciarAcesso() {
+        // Verifica se esta aba já expirou anteriormente
+        if (sessionStorage.getItem("status_sessao") === "expirado") {
+            bloquearImediatamente();
+            return;
+        }
 
-    function iniciarContagemRegressiva() {
+        // Se for a primeira vez abrindo, inicia a contagem
+        let tempoRestante = tempoSessao;
         const contador = setInterval(() => {
             tempoRestante--;
 
-            // Quando o tempo acabar
             if (tempoRestante <= 0) {
                 clearInterval(contador);
-                expirarAcesso();
+                // Marca esta aba como expirada permanentemente no navegador
+                sessionStorage.setItem("status_sessao", "expirado");
+                bloquearImediatamente();
             }
         }, 1000);
     }
 
-    function expirarAcesso() {
-        // Apaga o crachá e bloqueia a visualização
+    function bloquearImediatamente() {
         document.body.innerHTML = `
             <div style="padding: 60px 20px; text-align: center; font-family: sans-serif; background: #fff; height: 100vh;">
-                <div style="font-size: 70px;">⏳</div>
-                <h1 style="color: #555; margin-top: 20px;">SESSÃO EXPIRADA</h1>
-                <p style="color: #888; font-size: 1.1em;">Por segurança, o tempo de visualização acabou.</p>
-                <p style="color: #28a745; font-weight: bold;">Escaneie o QR Code físico novamente para acessar.</p>
+                <div style="font-size: 70px;">🚫</div>
+                <h1 style="color: #d32f2f; margin-top: 20px;">SESSÃO ENCERRADA</h1>
+                <p style="color: #666; font-size: 1.1em;">Por segurança, este link expirou e foi bloqueado.</p>
+                <p style="color: #28a745; font-weight: bold; margin-top: 20px;">Você precisa ESCANEAR O QR CODE FÍSICO novamente para validar o acesso.</p>
                 <hr style="width: 50px; margin: 30px auto; border: 1px solid #eee;">
-                <p style="color: #999; font-size: 0.8em;"><b>GREEN SERVEST</b><br>Controle de Acesso Dinâmico</p>
+                <p style="color: #999; font-size: 0.8em;"><b>GREEN SERVEST</b><br>Proteção de Dados em Tempo Real</p>
             </div>
         `;
     }
 
     // --- RELÓGIO E SEGURANÇA ---
     function atualizarRelogio() {
+        if (sessionStorage.getItem("status_sessao") === "expirado") return;
         const agora = new Date();
         const campoData = document.getElementById('data-check');
-        if (campoData) {
-            campoData.innerText = "Verificado em: " + agora.toLocaleString('pt-BR');
-        }
+        if (campoData) campoData.innerText = "Verificado em: " + agora.toLocaleString('pt-BR');
     }
 
-    // Inicia tudo ao carregar a página
     window.onload = function() {
-        iniciarContagemRegressiva();
+        gerenciarAcesso();
         setInterval(atualizarRelogio, 1000);
         atualizarRelogio();
     };
 
-    // Bloqueios de segurança Anti-Print
+    // Bloqueios Anti-Print
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
-        if (e.key === "PrintScreen" || (e.ctrlKey && (e.key === 'p' || e.key === 's'))) {
-            e.preventDefault();
-        }
+        if (e.key === "PrintScreen" || (e.ctrlKey && (e.key === 'p' || e.key === 's'))) e.preventDefault();
     });
 </script>
-
+    
 </body>
 </html>
